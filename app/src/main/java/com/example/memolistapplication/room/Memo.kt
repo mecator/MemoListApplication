@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import java.io.Serializable
 import java.util.*
 @TypeConverters(DateConverter::class)
 @Entity
@@ -16,4 +17,4 @@ data class Memo(
     val updateDate: Date,
     val description:String
 
-)
+):Serializable

@@ -1,5 +1,6 @@
 package com.example.memolistapplication.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
 
@@ -9,7 +10,7 @@ interface MemoDao {
     fun createMemo(memo: Memo): Long
 
     @Query("SELECT * FROM Memo")
-    fun findAll(): List<Memo>
+    fun findAll(): LiveData<List<Memo>>
 
     @Update
     fun updateMemo(memo: Memo)
