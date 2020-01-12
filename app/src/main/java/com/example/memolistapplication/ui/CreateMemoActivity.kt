@@ -8,9 +8,6 @@ import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityCreateMemoBinding
 import com.example.memolistapplication.room.Memo
 import com.example.memolistapplication.viewmodel.CreateMemoViewModel
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.*
 
 class CreateMemoActivity : AppCompatActivity() {
@@ -31,17 +28,22 @@ class CreateMemoActivity : AppCompatActivity() {
         )
 
         createMemoViewModel = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
-        createMemoViewModel.finishActivity.observe(this,androidx.lifecycle.Observer {
+        createMemoViewModel.finishActivity.observe(this, androidx.lifecycle.Observer {
             finish()
         })
 
         isUpdate = intent.getBooleanExtra(IS_UPDATE_KEY, false)
         createMemoViewModel.also {
             it.isUpdate = isUpdate
-            it.memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo(0L,Date(),Date(),"")
+            it.memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo(
+                0L,
+                Date(),
+                Date(),
+                ""
+            )
         }
-        binding.viewModel=createMemoViewModel
-        binding.lifecycleOwner=this
-        binding.memo=if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
+        binding.viewModel = createMemoViewModel
+        binding.lifecycleOwner = this
+        binding.memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
     }
 }

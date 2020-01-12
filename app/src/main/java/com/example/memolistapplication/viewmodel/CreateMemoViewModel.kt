@@ -2,7 +2,6 @@ package com.example.memolistapplication.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.memolistapplication.MemoApplication
 import com.example.memolistapplication.repository.MemoRepository
@@ -25,15 +24,13 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         get() = parentJob + Dispatchers.Main
     private val scope = CoroutineScope(coroutineContext)
     internal var isUpdate: Boolean = false
-     var finishActivity= MutableLiveData<Boolean>()
+    var finishActivity = MutableLiveData<Boolean>()
     internal var memo: Memo = Memo(0, Date(), Date(), "")
 
     init {
         val memoDao = MemoApplication.database.memoDao()
         repository = MemoRepository(memoDao)
-       // finishActivity.value=false
     }
-
 
     fun onClickSaveButton(str: String) {
         val zone = ZoneId.systemDefault()
