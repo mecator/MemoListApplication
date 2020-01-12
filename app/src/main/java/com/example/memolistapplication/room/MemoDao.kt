@@ -9,7 +9,7 @@ interface MemoDao {
     @Insert(onConflict = REPLACE)
     fun createMemo(memo: Memo): Long
 
-    @Query("SELECT * FROM Memo")
+    @Query("SELECT * FROM Memo ORDER BY Memo.update_date DESC")
     fun findAll(): LiveData<List<Memo>>
 
     @Update

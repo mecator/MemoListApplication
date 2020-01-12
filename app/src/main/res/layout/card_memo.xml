@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="memo"
+            type="com.example.memolistapplication.room.Memo" />
+        <variable
+            name="clickListener"
+            type="com.example.memolistapplication.ui.RecyclerViewHolder.MemoClickListener" />
+    </data>
 <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="10dp"
     android:clickable="true"
+    android:id="@+id/card_view"
     android:theme="@style/Theme.MaterialComponents"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="5dp"
     app:cardElevation="3dp"
     app:rippleColor="@color/colorAccent"
     app:strokeColor="@color/colorPrimary"
-    app:strokeWidth="0dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    app:strokeWidth="0dp">
 
         <TextView
             android:id="@+id/memo_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@{memo.description}"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
             android:textColor="@color/black" />
     </com.google.android.material.card.MaterialCardView>
+    </layout>
