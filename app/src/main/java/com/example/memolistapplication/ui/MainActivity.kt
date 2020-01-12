@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
         binding.memoList.adapter = viewAdapter
+        binding.lifecycleOwner=this
     }
 
     fun openCreateMemoActivity(memo: Memo?) {

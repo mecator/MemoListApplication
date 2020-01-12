@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.memolistapplication.viewmodel.CreateMemoViewModel" />
+        <variable
+            name="memo"
+            type="com.example.memolistapplication.room.Memo" />
+    </data>
+
+<LinearLayout
     android:id="@+id/rootLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,6 +22,7 @@
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="@{(v)->viewModel.onClickSaveButton(memoTextField.getText().toString())}"
         android:id="@+id/save_button"
         app:icon="@drawable/ic_check_black_24dp"
         android:text="保存"
@@ -27,12 +39,14 @@
         app:hintEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/memo_text_field"
+            android:id="@+id/memoTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@{memo.description}"
             android:hint="メモ内容"
             android:imeOptions="actionDone"
             android:inputType="textMultiLine"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
+</layout>

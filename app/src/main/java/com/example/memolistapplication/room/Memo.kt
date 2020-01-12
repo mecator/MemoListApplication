@@ -10,11 +10,11 @@ import java.util.*
 @Entity
 data class Memo(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    var id: Long,
     @ColumnInfo(name = "create_date")
-    val createDate:Date,
+    var createDate:Date,
     @ColumnInfo(name = "update_date")
-    val updateDate: Date,
-    val description:String
+    var updateDate: Date,
+    var description:String
 
 ):Serializable
