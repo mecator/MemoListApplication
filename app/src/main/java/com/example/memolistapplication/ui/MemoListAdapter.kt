@@ -12,7 +12,8 @@ import com.example.memolistapplication.room.Memo
 
 class MemoListAdapter(
     private val context: AppCompatActivity,
-    private var memoList: List<Memo>
+    private var memoList: List<Memo>,
+    private val clickListener:MainActivity.MemoClickListener
 ) :
     RecyclerView.Adapter<RecyclerViewHolder>() {
 
@@ -29,9 +30,7 @@ class MemoListAdapter(
         holder?.let {
             val binding = holder.binding
             binding.lifecycleOwner = context
-            holder.bind(memoList[position])
-//            it.itemText.text = memoList[position].description
-//            it.cardView.setOnClickListener {  }
+            holder.bind(memoList[position],clickListener)
         }
     }
 
@@ -39,19 +38,15 @@ class MemoListAdapter(
         val binding = DataBindingUtil.inflate<CardMemoBinding>(
             LayoutInflater.from(context), R.layout.card_memo, parent, false
         )
-        val layoutInflater = LayoutInflater.from(context)
-        val view = layoutInflater.inflate(R.layout.card_memo, parent, false)
         return RecyclerViewHolder(binding)
     }
 }
 
 class RecyclerViewHolder(val binding: CardMemoBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    interface MemoClickListener {
-        fun onItemClick(view: View, position: Int)
-    }
 
-    fun bind(memo: Memo) {
+    fun bind(memo: Memo,listener: MainActivity.MemoClickListener) {
         binding.memo = memo
+        binding.clickListener=listener
     }
 }

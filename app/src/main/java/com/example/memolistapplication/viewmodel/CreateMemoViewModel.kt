@@ -7,24 +7,29 @@ import com.example.memolistapplication.repository.MemoRepository
 import com.example.memolistapplication.room.Memo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class CreateMemoViewModel(app: Application) : AndroidViewModel(app)  {
+class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     private val repository: MemoRepository
 
     private var parentJob = Job()
     private val coroutineContext: CoroutineContext
         get() = parentJob + Dispatchers.Main
     private val scope = CoroutineScope(coroutineContext)
+
     init {
-        val memoDao=MemoApplication.database.memoDao()
-        repository= MemoRepository(memoDao)
+        val memoDao = MemoApplication.database.memoDao()
+        repository = MemoRepository(memoDao)
     }
-    fun insert(memo: Memo)=scope.launch (Dispatchers.IO){
+
+    fun insert(memo: Memo?) = scope.launch(IO) {
         repository.insert(memo)
     }
+
+    fun update(memo: Memo) = scope.launch(IO) { repository.update(memo) }
     override fun onCleared() {
         super.onCleared()
         parentJob.cancel()

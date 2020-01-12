@@ -8,13 +8,14 @@
             type="com.example.memolistapplication.room.Memo" />
         <variable
             name="clickListener"
-            type="com.example.memolistapplication.ui.RecyclerViewHolder.MemoClickListener" />
+            type="com.example.memolistapplication.ui.MainActivity.MemoClickListener" />
     </data>
 <com.google.android.material.card.MaterialCardView android:layout_width="match_parent"
     android:layout_height="50dp"
     android:layout_margin="10dp"
     android:clickable="true"
     android:id="@+id/card_view"
+    android:onClick="@{(v)->clickListener.onItemClick(memo)}"
     android:theme="@style/Theme.MaterialComponents"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="5dp"

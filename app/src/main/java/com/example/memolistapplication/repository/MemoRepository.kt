@@ -9,7 +9,15 @@ class MemoRepository(private val memoDao: MemoDao) {
     val memoList: LiveData<List<Memo>> = memoDao.findAll()
 
     @WorkerThread
-    suspend fun insert(memo: Memo) {
-        memoDao.createMemo(memo)
+    suspend fun insert(memo: Memo?) {
+        if (memo != null) {
+            memoDao.createMemo(memo)
+        }
+    }
+    @WorkerThread
+    suspend fun update(memo: Memo?) {
+        if (memo != null) {
+            memoDao.updateMemo(memo)
+        }
     }
 }
