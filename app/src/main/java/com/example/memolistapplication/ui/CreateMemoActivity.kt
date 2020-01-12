@@ -29,19 +29,25 @@ class CreateMemoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_create_memo)
         createMemoViewModel = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
 
-        isUpdate = intent.getBooleanExtra(IS_UPDATE_KEY, false)
-        val updateMemo = intent.getSerializableExtra(MEMO_KEY) as Memo
         val editText = findViewById<TextInputEditText>(R.id.memo_text_field)
         findViewById<LinearLayout>(R.id.rootLayout).setOnClickListener { editText.clearFocus() }
+
+        isUpdate = intent.getBooleanExtra(IS_UPDATE_KEY, false)
+        var memo: Memo?
+        val zone = ZoneId.systemDefault()
+        val date = LocalDateTime.now()
+        val instant = ZonedDateTime.of(date, zone).toInstant()
+        val formatedDate = Date.from(instant)
+        var createDate = formatedDate
+        var id = 0L
         if (isUpdate) {
+            val updateMemo = intent.getSerializableExtra(MEMO_KEY) as Memo
             editText.setText(updateMemo.description)
+            id = updateMemo.id
+            createDate = updateMemo.createDate
         }
         findViewById<MaterialButton>(R.id.save_button).setOnClickListener {
-            val memo: Memo?
-            val zone = ZoneId.systemDefault()
-            val date = LocalDateTime.now()
-            val instant = ZonedDateTime.of(date, zone).toInstant()
-            val formatedDate = Date.from(instant)
+
 
             val description = editText.text.toString()
             when (isUpdate) {
@@ -56,8 +62,8 @@ class CreateMemoActivity : AppCompatActivity() {
                 }
                 true -> {
                     memo = Memo(
-                        id = updateMemo.id,
-                        createDate = updateMemo.createDate,
+                        id = id,
+                        createDate = createDate,
                         updateDate = formatedDate,
                         description = description
                     )

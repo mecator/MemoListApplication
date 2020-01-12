@@ -29,7 +29,8 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         repository.insert(memo)
     }
 
-    fun update(memo: Memo) = scope.launch(IO) { repository.update(memo) }
+    fun update(memo: Memo?) = scope.launch(IO) { repository.update(memo) }
+
     override fun onCleared() {
         super.onCleared()
         parentJob.cancel()
