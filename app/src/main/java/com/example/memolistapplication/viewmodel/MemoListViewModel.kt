@@ -33,6 +33,9 @@ class MemoListViewModel(app: Application) : AndroidViewModel(app) {
         super.onCleared()
         parentJob.cancel()
     }
-    fun buttonClick(view: View){
+    fun deleteMemo(memo: Memo){
+        scope.launch(Dispatchers.IO) {
+            repository.delete(memo)
+        }
     }
 }

@@ -20,4 +20,9 @@ class MemoRepository(private val memoDao: MemoDao) {
             memoDao.updateMemo(memo)
         }
     }
+
+    @WorkerThread
+    suspend fun delete(memo:Memo){
+        memoDao.delete(memo)
+    }
 }
