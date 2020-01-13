@@ -1,52 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="viewModel"
             type="com.example.memolistapplication.viewmodel.CreateMemoViewModel" />
+
         <variable
             name="memo"
             type="com.example.memolistapplication.room.Memo" />
     </data>
 
-<LinearLayout
-    android:id="@+id/rootLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:theme="@style/Theme.MaterialComponents">
-
-    <com.google.android.material.button.MaterialButton
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="@{(v)->viewModel.onClickSaveButton(memoTextField.getText().toString())}"
-        android:id="@+id/save_button"
-        app:icon="@drawable/ic_check_black_24dp"
-        android:text="保存"
-        android:textColor="@color/colorPrimary"
-        app:rippleColor="@color/colorAccent"
-        app:strokeColor="@color/colorPrimary" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/CreateTextInputLayoutStyle"
+    <LinearLayout
+        android:id="@+id/rootLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        app:hintAnimationEnabled="true"
-        app:hintEnabled="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:theme="@style/Theme.MaterialComponents">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/memoTextField"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_button"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{(v)->viewModel.onClickSaveButton(memoTextField.getText().toString())}"
+            android:text="保存"
+            android:textColor="@color/colorPrimary"
+            app:icon="@drawable/ic_check_black_24dp"
+            app:rippleColor="@color/colorAccent"
+            app:strokeColor="@color/colorPrimary" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/CreateTextInputLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{memo.description}"
-            android:hint="メモ内容"
-            android:imeOptions="actionDone"
-            android:inputType="textMultiLine"
-            android:textColor="@color/black" />
-    </com.google.android.material.textfield.TextInputLayout>
-</LinearLayout>
+            android:layout_margin="6dp"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/memoTextField"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="メモ内容"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:text="@{memo.description}"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerInside"
+            app:lottie_rawRes="@raw/lottie_2020"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true" />
+    </LinearLayout>
 </layout>
