@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewAdapter: MemoListAdapter
     private lateinit var memoList: List<Memo>
     private lateinit var memoListViewModel: MemoListViewModel
-    var isDelete = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding =
@@ -47,18 +46,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onItemLongClick(memo: Memo): Boolean {
                  memoListViewModel.deleteMemo(memo)
-//
-//                val interpolator = OvershootInterpolator()
-//                ViewCompat.animate(binding.floatButton).rotation(360f).withLayer().setDuration(300)
-//                    .setInterpolator(interpolator).start()
-//                val handler = Handler()
-//                handler.postDelayed(Runnable {
-//                    if (!isDelete) {
-//                        binding.floatButton.setImageDrawable(getDrawable(R.drawable.ic_delete_24dp))
-//                        isDelete=true
-//                    }
-//                }, 200)
-
                 return true
             }
         })
@@ -80,5 +67,8 @@ class MainActivity : AppCompatActivity() {
     interface MemoClickListener {
         fun onItemClick(memo: Memo)
         fun onItemLongClick(memo: Memo): Boolean
+    }
+    interface ViewModelListener{
+        fun onDeleteMemoFailure()
     }
 }
