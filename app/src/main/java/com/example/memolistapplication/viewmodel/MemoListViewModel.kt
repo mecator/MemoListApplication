@@ -16,7 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-class MemoListViewModel(app: Context) : ViewModel() {
+class MemoListViewModel(app: Application) : AndroidViewModel(app) {
     private val repository: MemoRepositoryImpl
     var memoList: LiveData<List<Memo>>
 
