@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
-import com.airbnb.lottie.LottieCompositionFactory
 import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityCreateMemoBinding
 import com.example.memolistapplication.room.Memo
@@ -29,9 +28,13 @@ class CreateMemoActivity : AppCompatActivity() {
         )
 
         createMemoViewModel = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
-        createMemoViewModel.finishActivity.observe(this, androidx.lifecycle.Observer {
-            finish()
-        })
+            .apply {
+                initialize(this@CreateMemoActivity, object : OnSaveClickListener  {
+                   override fun onClick(){
+                       finish()
+                    }
+                })
+            }
 
         isUpdate = intent.getBooleanExtra(IS_UPDATE_KEY, false)
         createMemoViewModel.also {
@@ -43,16 +46,14 @@ class CreateMemoActivity : AppCompatActivity() {
                 ""
             )
         }
-        binding.viewModel = createMemoViewModel
-        binding.lifecycleOwner = this
-        binding.memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
+        binding.apply {
+            viewModel = createMemoViewModel
+            lifecycleOwner = this@CreateMemoActivity
+            memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
+        }
+    }
 
-//            val lottieView=binding.lottie
-//            LottieCompositionFactory.fromRawRes(this,R.raw.lottie_2020).addListener {
-//                lottieView.scale=lottieView.measuredWidth.toFloat()/it.bounds.width()
-//                lottieView.setComposition(it)
-//                lottieView.playAnimation()
-//
-//        }
+    interface OnSaveClickListener {
+        fun onClick()
     }
 }

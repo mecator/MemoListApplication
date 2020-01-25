@@ -1,11 +1,12 @@
 package com.example.memolistapplication.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import com.example.memolistapplication.MemoApplication
 import com.example.memolistapplication.repository.MemoRepository
 import com.example.memolistapplication.room.Memo
+import com.example.memolistapplication.ui.CreateMemoActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
@@ -23,13 +24,18 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     private val coroutineContext: CoroutineContext
         get() = parentJob + Dispatchers.Main
     private val scope = CoroutineScope(coroutineContext)
+    private  lateinit var mContext: Context
+    private lateinit var mOnSaveClickListener:CreateMemoActivity.OnSaveClickListener
     internal var isUpdate: Boolean = false
-    var finishActivity = MutableLiveData<Boolean>()
     internal var memo: Memo = Memo(0, Date(), Date(), "")
 
     init {
         val memoDao = MemoApplication.database.memoDao()
         repository = MemoRepository(memoDao)
+    }
+    fun initialize(context:Context,listener: CreateMemoActivity.OnSaveClickListener){
+        mContext=context
+        mOnSaveClickListener=listener
     }
 
     fun onClickSaveButton(str: String) {
@@ -56,7 +62,7 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                 update(memo)
             }
         }
-        finishActivity.postValue(true)
+        mOnSaveClickListener.onClick()
     }
 
     fun insert(memo: Memo?) = scope.launch(IO) {

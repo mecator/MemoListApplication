@@ -1,7 +1,6 @@
 package com.example.memolistapplication.ui
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -13,7 +12,7 @@ import com.example.memolistapplication.room.Memo
 class MemoListAdapter(
     private val context: AppCompatActivity,
     private var memoList: List<Memo>,
-    private val clickListener:MainActivity.MemoClickListener
+    private val clickListener: MainActivity.MemoClickListener
 ) :
     RecyclerView.Adapter<RecyclerViewHolder>() {
 
@@ -27,10 +26,9 @@ class MemoListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerViewHolder, position: Int) {
-        holder?.let {
-            val binding = holder.binding
+        holder.apply {
             binding.lifecycleOwner = context
-            holder.bind(memoList[position],clickListener)
+            bind(memoList[position], clickListener)
         }
     }
 
@@ -45,8 +43,8 @@ class MemoListAdapter(
 class RecyclerViewHolder(val binding: CardMemoBinding) : RecyclerView.ViewHolder(binding.root) {
 
 
-    fun bind(memo: Memo,listener: MainActivity.MemoClickListener) {
+    fun bind(memo: Memo, listener: MainActivity.MemoClickListener) {
         binding.memo = memo
-        binding.clickListener=listener
+        binding.clickListener = listener
     }
 }
