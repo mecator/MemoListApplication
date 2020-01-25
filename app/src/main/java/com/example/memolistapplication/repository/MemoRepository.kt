@@ -5,24 +5,23 @@ import androidx.lifecycle.LiveData
 import com.example.memolistapplication.room.Memo
 import com.example.memolistapplication.room.MemoDao
 
-class MemoRepository(private val memoDao: MemoDao) {
+class MemoRepository(private val memoDao: MemoDao) : MemoRepositoryImpl {
     val memoList: LiveData<List<Memo>> = memoDao.findAll()
 
-    @WorkerThread
-    suspend fun insert(memo: Memo?) {
+    override suspend fun insert(memo: Memo?) {
         if (memo != null) {
             memoDao.createMemo(memo)
         }
     }
-    @WorkerThread
-    suspend fun update(memo: Memo?) {
+
+
+    override suspend fun update(memo: Memo?) {
         if (memo != null) {
             memoDao.updateMemo(memo)
         }
     }
 
-    @WorkerThread
-    suspend fun delete(memo:Memo){
+    override suspend fun delete(memo: Memo) {
         memoDao.delete(memo)
     }
 }

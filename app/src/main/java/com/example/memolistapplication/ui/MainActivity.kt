@@ -110,4 +110,7 @@ class MainActivity : AppCompatActivity() {
         fun onItemClick(view: View, memo: Memo)
         fun onItemLongClick(view: View, memo: Memo): Boolean
     }
+    interface ViewModelListener{
+        fun onDeleteMemoFailure()
+    }
 }
