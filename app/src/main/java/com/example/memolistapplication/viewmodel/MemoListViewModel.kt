@@ -1,15 +1,14 @@
 package com.example.memolistapplication.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import com.example.memolistapplication.MemoApplication
 import com.example.memolistapplication.repository.MemoRepository
 import com.example.memolistapplication.repository.MemoRepositoryImpl
 import com.example.memolistapplication.room.Memo
-import com.example.memolistapplication.ui.MainActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -19,8 +18,9 @@ import kotlin.coroutines.CoroutineContext
 class MemoListViewModel(app: Application) : AndroidViewModel(app) {
     private val repository: MemoRepositoryImpl
     var memoList: LiveData<List<Memo>>
-
-    private var mListener: MainActivity.ViewModelListener? = null
+    private var _deleteMemoState = MutableLiveData<String>()
+    val deleteMemoState: LiveData<String>
+        get() = _deleteMemoState
     private var parentJob = Job()
     private val coroutineContext: CoroutineContext
         get() = parentJob + Dispatchers.Main
@@ -37,19 +37,25 @@ class MemoListViewModel(app: Application) : AndroidViewModel(app) {
         parentJob.cancel()
     }
 
-    fun onSetListener(listener: MainActivity.ViewModelListener) {
-        mListener = listener
-    }
-
     fun deleteMemo(memo: Memo) {
+        var isSuccess = true
         scope.launch(Dispatchers.IO) {
             runCatching { repository.delete(memo) }.fold(
-                onFailure = { onDeleteMemoFailure() },
-                onSuccess = {})
+                onFailure = { isSuccess = true },
+                onSuccess = { isSuccess = false })
+        }
+        if (isSuccess) {
+            onDeleteMemoSuccess()
+        } else {
+            onDeleteMemoFailure()
         }
     }
 
-    fun onDeleteMemoFailure() {
+    private fun onDeleteMemoFailure() {
+        _deleteMemoState.value = "メモの消去に失敗しました"
+    }
 
+    private fun onDeleteMemoSuccess() {
+        _deleteMemoState.value = "メモの消去に成功しました"
     }
 }

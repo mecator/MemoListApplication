@@ -1,6 +1,7 @@
 package com.example.memolistapplication.ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
@@ -18,7 +19,8 @@ import com.example.memolistapplication.ui.CreateMemoActivity.Companion.IS_UPDATE
 import com.example.memolistapplication.ui.CreateMemoActivity.Companion.MEMO_KEY
 import com.example.memolistapplication.viewmodel.MemoListViewModel
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,45 +28,61 @@ class MainActivity : AppCompatActivity() {
     private var isDeleteMode: Boolean = false
     private lateinit var viewAdapter: MemoListAdapter
     private lateinit var memos: List<Memo>
+    private var mDeleteMemos: MutableList<Memo> = arrayListOf()
+    private var mDeleteMemoViews: MutableList<View> = arrayListOf()
     private lateinit var memoListViewModel: MemoListViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         memos = arrayListOf()
         memoListViewModel = ViewModelProviders.of(this).get(MemoListViewModel::class.java)
-        memoListViewModel.memoList.observe(this, Observer { memoList ->
-            memoList.let { viewAdapter.setMemoList(it) }
+        memoListViewModel.memoList.observe(this, Observer {
+            if (it != null) {
+                viewAdapter.setMemoList(it)
+            }
         })
-        DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-            .apply {
-                floatButton.apply {
-                    this.setOnClickListener { v ->
-                        openCreateMemoActivity(null)
-                    }
-                }
-                memoList.layoutManager =
-                    LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                viewAdapter =
-                    MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
-                        override fun onItemClick(view: View, memo: Memo) {
-                            if (!isDeleteMode) {
-                                openCreateMemoActivity(memo)
+        memoListViewModel.deleteMemoState.observe(this, Observer {
+            Snackbar.make(rootLayout, it, Snackbar.LENGTH_LONG).show()
+        })
+        val binding =
+            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+                .apply {
+                    floatButton.apply {
+                        this.setOnClickListener { v ->
+                            if (isFabPlusIcon) {
+                                openCreateMemoActivity(null)
                             } else {
-                                changeCarColor(view)
+                                for (deleteMemo in mDeleteMemos) {
+                                    memoListViewModel.deleteMemo(deleteMemo)
+                                }
+                                mDeleteMemos = arrayListOf()
+                                refreshMemoColor()
+                                rotateFAB()
                             }
                         }
+                    }
+                    memoList.layoutManager =
+                        LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+                    viewAdapter =
+                        MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
+                            override fun onItemClick(view: View, memo: Memo) {
+                                if (!isDeleteMode) {
+                                    openCreateMemoActivity(memo)
+                                } else {
+                                    changeCarColor(view, memo)
+                                }
+                            }
 
-                        override fun onItemLongClick(view: View, memo: Memo): Boolean {
-                            isDeleteMode = true
-                            //memoListViewModel.deleteMemo(memo)
-                            changeCarColor(view)
-                            rotateFAB(floatButton)
-                            return true
-                        }
-                    })
-                memoList.adapter = viewAdapter
-                lifecycleOwner = this@MainActivity
-            }
+                            override fun onItemLongClick(view: View, memo: Memo): Boolean {
+                                isDeleteMode = true
+
+                                changeCarColor(view, memo)
+                                rotateFAB()
+                                return true
+                            }
+                        })
+                    memoList.adapter = viewAdapter
+                    lifecycleOwner = this@MainActivity
+                }
     }
 
     fun openCreateMemoActivity(memo: Memo?) {
@@ -78,39 +96,82 @@ class MainActivity : AppCompatActivity() {
         )
     }
 
-    fun changeCarColor(card: View) {
-
+    fun changeCarColor(card: View, memo: Memo) {
         if (card is MaterialCardView) {
-            card.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    this@MainActivity,
-                    R.color.colorAccent
+            if (card.cardBackgroundColor == ColorStateList.valueOf(getColor(R.color.white))) {
+                card.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        this@MainActivity,
+                        R.color.colorAccent
+                    )
                 )
-            )
+                mDeleteMemos.add(memo)
+                mDeleteMemoViews.add(card)
+            } else {
+                card.setCardBackgroundColor(
+                    ContextCompat.getColor(
+                        this@MainActivity,
+                        R.color.white
+                    )
+                )
+                mDeleteMemos.remove(memo)
+                mDeleteMemoViews.remove(card)
+                if (mDeleteMemos.size == 0) {
+                    rotateFAB()
+                }
+            }
+
         }
     }
 
-    fun rotateFAB(fab: View) {
-        if (fab is FloatingActionButton) {
-            if (!isDeleteMode)
-                ViewCompat.animate(fab).rotation(360f).withLayer().setDuration(300L).setInterpolator(
-                    OvershootInterpolator()
-                )
-            if (isFabPlusIcon) {
-                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_delete_24dp))
-                isFabPlusIcon = false
-            } else {
-                fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add))
-                isFabPlusIcon = true
+    fun refreshMemoColor() {
+        for (view in mDeleteMemoViews) {
+            if (view is MaterialCardView) {
+                if (view.cardBackgroundColor == ColorStateList.valueOf(getColor(R.color.white))) {
+                    view.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            this@MainActivity,
+                            R.color.colorAccent
+                        )
+                    )
+                } else {
+                    view.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            this@MainActivity,
+                            R.color.white
+                        )
+                    )
+                }
+
             }
         }
+        mDeleteMemoViews = arrayListOf()
+    }
+
+    fun rotateFAB() {
+        if (!isDeleteMode) {
+            ViewCompat.animate(float_button).rotation(360f).withLayer().setDuration(300L)
+                .setInterpolator(
+                    OvershootInterpolator()
+                )
+        }
+        if (isFabPlusIcon) {
+            float_button.setImageDrawable(
+                ContextCompat.getDrawable(
+                    this,
+                    R.drawable.ic_delete_24dp
+                )
+            )
+            isFabPlusIcon = false
+        } else {
+            float_button.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add))
+            isFabPlusIcon = true
+        }
+
     }
 
     interface MemoClickListener {
         fun onItemClick(view: View, memo: Memo)
         fun onItemLongClick(view: View, memo: Memo): Boolean
-    }
-    interface ViewModelListener{
-        fun onDeleteMemoFailure()
     }
 }
