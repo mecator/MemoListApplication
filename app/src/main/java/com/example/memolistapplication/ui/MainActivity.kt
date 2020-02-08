@@ -118,6 +118,7 @@ class MainActivity : AppCompatActivity() {
                 mDeleteMemoViews.remove(card)
                 if (mDeleteMemos.size == 0) {
                     rotateFAB()
+                    isDeleteMode=false
                 }
             }
 

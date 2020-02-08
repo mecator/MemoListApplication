@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import java.io.Serializable
 import java.util.*
+
 @TypeConverters(DateConverter::class)
 @Entity
 data class Memo(
