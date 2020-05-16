@@ -41,7 +41,7 @@ class MemoListViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    suspend fun setDeleteState(message: String) {
+    private suspend fun setDeleteState(message: String) {
         withContext(Dispatchers.Main) {
             _deleteMemoState.value = message
         }

@@ -11,10 +11,10 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:theme="@style/Theme.MaterialComponents"
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:theme="@style/Theme.MaterialComponents"
         tools:context=".ui.MainActivity">
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,10 +25,25 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                app:liftOnScroll="true"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/topToolBar"
+                    android:layout_width="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:layout_height="?attr/actionBarSize"
+                    app:menu="@menu/top_toolbar_menu"
+                    />
+            </com.google.android.material.appbar.AppBarLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/memo_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
             <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/app_bar"
@@ -36,9 +51,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 app:backgroundTint="@color/colorPrimary"
+                app:elevation="5dp"
                 app:fabAlignmentMode="end"
                 app:fabCradleMargin="5dp"
-                app:elevation="5dp"
                 app:fabCradleRoundedCornerRadius="15dp"
                 app:hideOnScroll="true" />
 
@@ -49,13 +64,13 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="15dp"
-                android:scaleType="center"
                 android:overScrollMode="ifContentScrolls"
+                android:scaleType="center"
                 android:src="@drawable/ic_add"
-                app:pressedTranslationZ="10dp"
                 app:elevation="5dp"
                 app:fabCustomSize="50dp"
-                app:layout_anchor="@id/app_bar" />
+                app:layout_anchor="@id/app_bar"
+                app:pressedTranslationZ="10dp" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

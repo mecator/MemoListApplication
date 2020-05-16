@@ -31,8 +31,13 @@ class MainActivity : AppCompatActivity() {
     private var mDeleteMemos: MutableList<Memo> = arrayListOf()
     private var mDeleteMemoViews: MutableList<View> = arrayListOf()
     private lateinit var memoListViewModel: MemoListViewModel
+    private val binding by lazy {
+        DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setSupportActionBar(topToolBar)
         memos = arrayListOf()
         memoListViewModel = ViewModelProviders.of(this).get(MemoListViewModel::class.java)
         memoListViewModel.memoList.observe(this, Observer {
@@ -40,14 +45,23 @@ class MainActivity : AppCompatActivity() {
                 viewAdapter.setMemoList(it)
             }
         })
+
+
         memoListViewModel.deleteMemoState.observe(this, Observer {
             Snackbar.make(rootLayout, it, Snackbar.LENGTH_LONG).show()
         })
-        val binding =
-            DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
-                .apply {
-                    floatButton.apply {
-                        this.setOnClickListener { v ->
+        binding.also {
+                    it.topToolBar.setOnMenuItemClickListener {item->
+                        when (item.itemId) {
+                            R.id.github -> {
+                                openGithubActivity()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    it.floatButton.apply {
+                        this.setOnClickListener {
                             if (isFabPlusIcon) {
                                 openCreateMemoActivity(null)
                             } else {
@@ -60,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    memoList.layoutManager =
+                    it.memoList.layoutManager =
                         LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
                     viewAdapter =
                         MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
@@ -80,9 +94,13 @@ class MainActivity : AppCompatActivity() {
                                 return true
                             }
                         })
-                    memoList.adapter = viewAdapter
-                    lifecycleOwner = this@MainActivity
+                    it.memoList.adapter = viewAdapter
+                    it.lifecycleOwner = this@MainActivity
                 }
+    }
+    fun openGithubActivity(){
+        val intent=Intent(applicationContext,GithubActivity::class.java)
+        startActivity(intent)
     }
 
     fun openCreateMemoActivity(memo: Memo?) {
@@ -118,7 +136,7 @@ class MainActivity : AppCompatActivity() {
                 mDeleteMemoViews.remove(card)
                 if (mDeleteMemos.size == 0) {
                     rotateFAB()
-                    isDeleteMode=false
+                    isDeleteMode = false
                 }
             }
 
