@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.CreateMemoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" >
+            android:theme="@style/AppTheme">
 
         </activity>
         <activity android:name=".ui.GithubActivity"

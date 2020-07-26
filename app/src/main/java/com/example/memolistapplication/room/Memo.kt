@@ -13,9 +13,16 @@ data class Memo(
     @PrimaryKey(autoGenerate = true)
     var id: Long,
     @ColumnInfo(name = "create_date")
-    var createDate:Date,
+    var createDate: Date,
     @ColumnInfo(name = "update_date")
-    var updateDate: Date,
-    var description:String
+    var updateDate: Date?,
+    var description: String,
+    var contents: String?
 
-):Serializable
+) : Serializable {
+    companion object {
+        fun defaultMemo(): Memo {
+            return Memo(0, Date(), Date(), "", "")
+        }
+    }
+}

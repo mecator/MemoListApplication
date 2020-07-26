@@ -25,7 +25,9 @@
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{(v)->viewModel.onClickSaveButton(memoTextField.getText().toString())}"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:onClick="@{(v)->viewModel.onClickSaveButton(memoTitle.getText().toString(),memoContents.getText().toString())}"
             android:text="保存"
             android:textColor="@color/colorPrimary"
             app:icon="@drawable/ic_check_black_24dp"
@@ -33,31 +35,45 @@
             app:strokeColor="@color/colorPrimary" />
 
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/CreateTextInputLayoutStyle"
+            style="@style/titleStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="6dp"
+            android:layout_margin="8dp"
             app:hintAnimationEnabled="true"
             app:hintEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/memoTextField"
+                android:id="@+id/memoTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="メモ内容"
+                android:hint="タイトル"
                 android:imeOptions="actionDone"
                 android:inputType="textMultiLine"
                 android:text="@{memo.description}"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textColorHint="@color/second_text" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/contentsStyle"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerInside"
-            app:lottie_rawRes="@raw/lottie_2020"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true" />
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/memoContents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start"
+                android:hint="内容"
+                android:imeOptions="actionDone"
+                android:inputType="textMultiLine"
+                android:text="@{memo.contents}"
+                android:textColor="@color/black"
+                app:hintTextColor="@color/colorPrimary" />
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 </layout>
