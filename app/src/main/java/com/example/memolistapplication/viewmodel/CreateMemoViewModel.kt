@@ -1,7 +1,6 @@
 package com.example.memolistapplication.viewmodel
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import com.example.memolistapplication.MemoApplication
 import com.example.memolistapplication.repository.MemoRepository
@@ -24,8 +23,7 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     private val coroutineContext: CoroutineContext
         get() = parentJob + Dispatchers.Main
     private val scope = CoroutineScope(coroutineContext)
-    private lateinit var mContext: Context
-    private lateinit var mOnSaveClickListener: CreateMemoActivity.OnSaveClickListener
+    private lateinit var onViewModelClickListener: CreateMemoActivity.OnViewModelClickListener
 
     internal var isUpdate: Boolean = false
     internal var memo = Memo.defaultMemo()
@@ -35,9 +33,8 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         repository = MemoRepository(memoDao)
     }
 
-    fun initialize(context: Context, listener: CreateMemoActivity.OnSaveClickListener) {
-        mContext = context
-        mOnSaveClickListener = listener
+    fun initialize(listener: CreateMemoActivity.OnViewModelClickListener) {
+        onViewModelClickListener = listener
     }
 
     fun onClickSaveButton(title: String, contents: String) {
@@ -66,7 +63,15 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                 update(memo)
             }
         }
-        mOnSaveClickListener.onClick()
+        onViewModelClickListener.onClickSaveButton()
+    }
+
+    fun onClickListButton(){
+        onViewModelClickListener.onClickListButton()
+    }
+
+    fun onClickTextButton(){
+        onViewModelClickListener.onClickTextButton()
     }
 
     fun insert(memo: Memo?) = scope.launch(IO) {

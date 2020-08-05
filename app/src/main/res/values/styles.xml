@@ -16,6 +16,7 @@
         <item name="hintTextColor">@color/colorPrimary</item>
     </style>
     <style name="contentsStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimary</item>
         <item name="android:textColorHint">@color/hint</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textColorHighlight">@color/colorPrimary</item>

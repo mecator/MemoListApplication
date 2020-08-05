@@ -1,17 +1,18 @@
 package com.example.memolistapplication.ui
 
-import android.app.Activity
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.util.Log
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityCreateMemoBinding
 import com.example.memolistapplication.room.Memo
 import com.example.memolistapplication.viewmodel.CreateMemoViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import java.util.*
 
 class CreateMemoActivity : AppCompatActivity() {
 
@@ -33,9 +34,18 @@ class CreateMemoActivity : AppCompatActivity() {
 
         createMemoViewModel = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
             .apply {
-                initialize(this@CreateMemoActivity, object : OnSaveClickListener {
-                    override fun onClick() {
+                initialize(object : OnViewModelClickListener {
+                    override fun onClickSaveButton() {
                         finish()
+                    }
+
+                    override fun onClickListButton() {
+                        binding.frame.addView(LayoutInflater.from(applicationContext).inflate(R.layout.memo_check_list, null, false))
+                    }
+
+                    override fun onClickTextButton() {
+                        binding.frame.addView(layoutInflater.inflate(R.layout.memo_text, null).findViewById(R.id.memoText))
+                        binding.frame.invalidate()
                     }
                 })
             }
@@ -47,14 +57,23 @@ class CreateMemoActivity : AppCompatActivity() {
         }
 
         binding.apply {
+            binding.testButton.setOnClickListener {
+                val list=frame.children.filter { view -> view is CheckItemCustomView }.map {
+                    val view = it as? CheckItemCustomView
+                    view?.getCheckItem()
+                }.toList().filterNotNull()
+                Log.i("22","22")
+            }
             viewModel = createMemoViewModel
             lifecycleOwner = this@CreateMemoActivity
             memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
         }
     }
 
-    interface OnSaveClickListener {
-        fun onClick()
+    interface OnViewModelClickListener {
+        fun onClickSaveButton()
+        fun onClickListButton()
+        fun onClickTextButton()
     }
 
     override fun onBackPressed() {
@@ -79,7 +98,7 @@ class CreateMemoActivity : AppCompatActivity() {
 
     fun saveMemo() {
         binding.also {
-            createMemoViewModel.onClickSaveButton(it.memoTitle.text.toString(), it.memoContents.text.toString())
+            createMemoViewModel.onClickSaveButton(it.memoTitle.text.toString(), " it.memoContents.text.toString()")
         }
     }
 }
