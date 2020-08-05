@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityCreateMemoBinding
+import com.example.memolistapplication.model.memo.Contents
 import com.example.memolistapplication.room.Memo
 import com.example.memolistapplication.viewmodel.CreateMemoViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -62,8 +63,12 @@ class CreateMemoActivity : AppCompatActivity() {
                     val view = it as? CheckItemCustomView
                     view?.getCheckItem()
                 }.toList().filterNotNull()
-                Log.i("22","22")
+                val json=list[0].toString()
+                val str=Contents.MemoContent.stringToObject(json)
+                val t=str.type
+                Log.i("qqqq",t.type)
             }
+
             viewModel = createMemoViewModel
             lifecycleOwner = this@CreateMemoActivity
             memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else null
