@@ -67,10 +67,13 @@
                 android:overScrollMode="ifContentScrolls"
                 android:scaleType="center"
                 android:src="@drawable/ic_add"
+                app:backgroundTint="@color/colorAccent"
                 app:elevation="5dp"
+                app:tint="@color/white"
                 app:fabCustomSize="50dp"
                 app:layout_anchor="@id/app_bar"
-                app:pressedTranslationZ="10dp" />
+                app:pressedTranslationZ="10dp"
+                android:contentDescription="TODO" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

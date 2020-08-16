@@ -40,9 +40,14 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(topToolBar)
         memos = arrayListOf()
         memoListViewModel = ViewModelProviders.of(this).get(MemoListViewModel::class.java)
-        memoListViewModel.memoList.observe(this, Observer {
-            if (it != null) {
-                viewAdapter.setMemoList(it)
+        memoListViewModel.memoList.observe(this, Observer { memoList ->
+            if (memoList != null) {
+                val list1 = memoList.toMutableList()
+                val list2 = arrayListOf<Memo>()
+                list1.filterIndexedTo(list2, { _, memo -> memo.isPin })
+               val l= memoList.filter { memo -> !memo.isPin }
+                val p=list2.plus(l)
+                viewAdapter.setMemoList(p)
             }
         })
 
@@ -51,56 +56,48 @@ class MainActivity : AppCompatActivity() {
             Snackbar.make(rootLayout, it, Snackbar.LENGTH_LONG).show()
         })
         binding.also {
-                    it.topToolBar.setOnMenuItemClickListener {item->
-                        when (item.itemId) {
-                            R.id.github -> {
-                                openGithubActivity()
-                                true
-                            }
-                            else -> false
-                        }
-                    }
-                    it.floatButton.apply {
-                        this.setOnClickListener {
-                            if (isFabPlusIcon) {
-                                openCreateMemoActivity(null)
-                            } else {
-                                for (deleteMemo in mDeleteMemos) {
-                                    memoListViewModel.deleteMemo(deleteMemo)
-                                }
-                                mDeleteMemos = arrayListOf()
-                                refreshMemoColor()
-                                rotateFAB()
-                            }
-                        }
-                    }
-                    it.memoList.layoutManager =
-                        LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
-                    viewAdapter =
-                        MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
-                            override fun onItemClick(view: View, memo: Memo) {
-                                if (!isDeleteMode) {
-                                    openCreateMemoActivity(memo)
-                                } else {
-                                    changeCarColor(view, memo)
-                                }
-                            }
-
-                            override fun onItemLongClick(view: View, memo: Memo): Boolean {
-                                isDeleteMode = true
-
-                                changeCarColor(view, memo)
-                                rotateFAB()
-                                return true
-                            }
-                        })
-                    it.memoList.adapter = viewAdapter
-                    it.lifecycleOwner = this@MainActivity
+            it.topToolBar.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    else -> false
                 }
-    }
-    fun openGithubActivity(){
-        val intent=Intent(applicationContext,GithubActivity::class.java)
-        startActivity(intent)
+            }
+            it.floatButton.apply {
+                this.setOnClickListener {
+                    if (isFabPlusIcon) {
+                        openCreateMemoActivity(null)
+                    } else {
+                        for (deleteMemo in mDeleteMemos) {
+                            memoListViewModel.deleteMemo(deleteMemo)
+                        }
+                        mDeleteMemos = arrayListOf()
+                        refreshMemoColor()
+                        rotateFAB()
+                    }
+                }
+            }
+            it.memoList.layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.VERTICAL, false)
+            viewAdapter =
+                MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
+                    override fun onItemClick(view: View, memo: Memo) {
+                        if (!isDeleteMode) {
+                            openCreateMemoActivity(memo)
+                        } else {
+                            changeCarColor(view, memo)
+                        }
+                    }
+
+                    override fun onItemLongClick(view: View, memo: Memo): Boolean {
+                        isDeleteMode = true
+
+                        changeCarColor(view, memo)
+                        rotateFAB()
+                        return true
+                    }
+                })
+            it.memoList.adapter = viewAdapter
+            it.lifecycleOwner = this@MainActivity
+        }
     }
 
     fun openCreateMemoActivity(memo: Memo?) {

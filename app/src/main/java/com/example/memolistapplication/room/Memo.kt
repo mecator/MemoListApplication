@@ -17,12 +17,21 @@ data class Memo(
     @ColumnInfo(name = "update_date")
     var updateDate: Date?,
     var description: String,
-    var contents: String?
+    var contents: String?,
+    var isPin: Boolean = false
 
 ) : Serializable {
     companion object {
         fun defaultMemo(): Memo {
-            return Memo(0, Date(), Date(), "", "")
+            return Memo(0, Date(), Date(), "", "", false)
         }
+    }
+
+    fun alterMemo(): Memo {
+        return Memo(id, createDate, updateDate, description, contents, isPin)
+    }
+
+    fun isEqual(memo: Memo): Boolean {
+        return (id == memo.id && createDate == memo.createDate && updateDate == memo.updateDate && description == memo.description && contents == memo.contents && isPin == memo.isPin)
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.appcompat.widget.AppCompatEditText android:id="@+id/memoText"
+<EditText android:id="@+id/memoText"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     android:background="@null"
+    android:inputType="textMultiLine"
     android:hint="内容"
     android:textColor="@color/black"
     android:textColorHint="@color/hint"

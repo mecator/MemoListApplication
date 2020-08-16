@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <import type="android.view.View"/>
         <variable
             name="memo"
             type="com.example.memolistapplication.room.Memo" />
@@ -51,6 +51,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" />
+
+            <ImageView
+                android:rotation="45"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/ic_pin"
+                android:backgroundTint="@color/colorAccent"
+                android:visibility="@{memo.pin? View.VISIBLE : View.INVISIBLE}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
                 android:id="@+id/date"

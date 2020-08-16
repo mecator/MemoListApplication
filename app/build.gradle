@@ -16,6 +16,12 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation":
+                                     "$projectDir/schemas".toString()]
+            }
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -24,10 +30,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    viewBinding{
-        enabled=true
+    buildFeatures {
+        dataBinding true
     }
-    android.buildFeatures.dataBinding = true
 
     buildTypes {
         release {

@@ -32,4 +32,25 @@ data class Contents(val list: List<MemoContent>) {
         }
 
     }
+
+    override fun toString(): String {
+        val json = Json(JsonConfiguration.Stable)
+        return json.stringify(serializer(), this)
+    }
+
+    companion object {
+        fun stringToObject(str: String): List<MemoContent> {
+            if (str.isEmpty()) return emptyList()
+
+            val json = Json(JsonConfiguration.Stable)
+            return json.parse(serializer(), str).list
+        }
+
+        fun objectToString(contents: List<MemoContent>): String {
+            if (contents.isEmpty()) return ""
+
+            val json = Json(JsonConfiguration.Stable)
+            return json.stringify(serializer(), Contents(contents))
+        }
+    }
 }

@@ -11,7 +11,7 @@ class MemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        database = Room.databaseBuilder(this, objectOf<DataBase>(), "memo.db").build()
+        database = Room.databaseBuilder(this, objectOf<DataBase>(), "memo.db").fallbackToDestructiveMigration().build()
     }
 }
 
