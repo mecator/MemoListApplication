@@ -4,6 +4,8 @@ package com.example.memolistapplication.model.memo
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.parse
+import kotlinx.serialization.stringify
 
 @Serializable
 data class Contents(val list: List<MemoContent>) {
@@ -19,38 +21,38 @@ data class Contents(val list: List<MemoContent>) {
         }
 
         override fun toString(): String {
-            val json = Json(JsonConfiguration.Stable)
-            return json.stringify(serializer(), this)
+            val json = Json { allowStructuredMapKeys = true }
+            return json.encodeToString(serializer(), this)
         }
 
         companion object {
             fun stringToObject(str: String): MemoContent {
-                val json = Json(JsonConfiguration.Stable)
+                val json = Json { allowStructuredMapKeys = true }
 
-                return json.parse(serializer(), str)
+                return json.decodeFromString(serializer(), str)
             }
         }
 
     }
 
     override fun toString(): String {
-        val json = Json(JsonConfiguration.Stable)
-        return json.stringify(serializer(), this)
+        val json = Json { allowStructuredMapKeys = true }
+        return json.encodeToString(serializer(), this)
     }
 
     companion object {
         fun stringToObject(str: String): List<MemoContent> {
             if (str.isEmpty()) return emptyList()
 
-            val json = Json(JsonConfiguration.Stable)
-            return json.parse(serializer(), str).list
+            val json = Json { allowStructuredMapKeys = true }
+            return json.decodeFromString(serializer(), str).list
         }
 
         fun objectToString(contents: List<MemoContent>): String {
             if (contents.isEmpty()) return ""
 
-            val json = Json(JsonConfiguration.Stable)
-            return json.stringify(serializer(), Contents(contents))
+            val json = Json { allowStructuredMapKeys = true }
+            return json.encodeToString(serializer(), Contents(contents))
         }
     }
 }

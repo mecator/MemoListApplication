@@ -2,6 +2,7 @@
 <com.example.memolistapplication.ui.CheckItemCustomView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_memo_check"
+    android:theme="@style/AppTheme"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,8 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:useMaterialThemeColors="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:layout_marginTop="12dp"

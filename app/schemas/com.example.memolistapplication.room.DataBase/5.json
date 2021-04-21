@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 4,
-    "identityHash": "d70c05c8a177462ef68a19d33203e5f2",
+    "version": 5,
+    "identityHash": "5dbe236e16e16a4f3835e707508e3bf5",
     "entities": [
       {
         "tableName": "Memo",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `create_date` INTEGER NOT NULL, `update_date` INTEGER, `description` TEXT NOT NULL, `contents` TEXT, `isPin` INTEGER NOT NULL, `checkRatio` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `create_date` INTEGER NOT NULL, `update_date` INTEGER, `description` TEXT NOT NULL, `contents` TEXT, `isPin` INTEGER NOT NULL, `checkRatio` REAL NOT NULL, `isMemo` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -47,6 +47,12 @@
           {
             "fieldPath": "checkRatio",
             "columnName": "checkRatio",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isMemo",
+            "columnName": "isMemo",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -61,9 +67,10 @@
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d70c05c8a177462ef68a19d33203e5f2\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5dbe236e16e16a4f3835e707508e3bf5')"
     ]
   }
 }

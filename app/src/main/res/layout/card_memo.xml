@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
+        <import type="double"/>
         <variable
             name="memo"
             type="com.example.memolistapplication.room.Memo" />
@@ -43,8 +46,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:textSize="16sp"
                 android:ellipsize="end"
-                android:maxLines="3"
+                android:maxLines="2"
                 android:text="@{memo.description}"
                 android:textColor="@color/black"
                 app:layout_constraintEnd_toStartOf="@id/date"
@@ -52,15 +57,29 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" />
 
+            <TextView
+                android:id="@+id/check_ratio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:visibility="@{memo.memo? View.GONE:View.VISIBLE}"
+                android:text="@{@string/check_ratio(memo.getRatioPercent)}"
+                android:textColor="@color/second_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:text="チェック率30%" />
+
             <ImageView
-                android:rotation="45"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@drawable/ic_pin"
                 android:backgroundTint="@color/colorAccent"
+                android:rotation="45"
                 android:visibility="@{memo.pin? View.VISIBLE : View.INVISIBLE}"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/date"

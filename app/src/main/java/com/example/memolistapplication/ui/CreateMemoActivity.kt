@@ -6,6 +6,7 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -26,10 +27,12 @@ class CreateMemoActivity : AppCompatActivity() {
     companion object {
         internal const val MEMO_KEY = "memo"
         internal const val IS_UPDATE_KEY = "isUpdate"
+        internal const val IS_MEMO_KEY = "isMemo"
     }
 
-    private var memo: Memo = Memo.defaultMemo()
+    private lateinit var memo: Memo
     private var isUpdate: Boolean = false
+    private var isMemo: Boolean = true
     private lateinit var createMemoViewModel: CreateMemoViewModel
     private lateinit var binding: ActivityCreateMemoBinding
 
@@ -40,7 +43,8 @@ class CreateMemoActivity : AppCompatActivity() {
             R.layout.activity_create_memo
         )
         isUpdate = intent.getBooleanExtra(IS_UPDATE_KEY, false)
-        memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo.defaultMemo()
+        isMemo = intent.getBooleanExtra(IS_MEMO_KEY, true)
+        memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo.defaultMemo(isMemo)
 
         createMemoViewModel = ViewModelProviders.of(this).get(CreateMemoViewModel::class.java)
             .apply {
@@ -55,11 +59,6 @@ class CreateMemoActivity : AppCompatActivity() {
 
                     override fun onClickListButton() {
                         binding.frame.addView(LayoutInflater.from(baseContext).inflate(R.layout.memo_check_list, null, false))
-                    }
-
-                    override fun onClickTextButton() {
-                        binding.frame.addView(layoutInflater.inflate(R.layout.memo_text, null).findViewById(R.id.memoText))
-                        binding.frame.invalidate()
                     }
 
                     override fun onClickPinButton() {
@@ -84,16 +83,19 @@ class CreateMemoActivity : AppCompatActivity() {
         binding.apply {
             viewModel = createMemoViewModel
             lifecycleOwner = this@CreateMemoActivity
-            memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo.defaultMemo()
+            memo = if (isUpdate) intent.getSerializableExtra(MEMO_KEY) as Memo else Memo.defaultMemo(isMemo)
             setMemoView()
+            if (isMemo) {
+                listButton.visibility = GONE
+            }
         }
+
     }
 
     interface OnViewModelListener {
         fun getFrameChildren(): List<View>
         fun onClickSaveButton()
         fun onClickListButton()
-        fun onClickTextButton()
         fun onClickPinButton()
         fun getTitle(): String
     }
@@ -122,6 +124,9 @@ class CreateMemoActivity : AppCompatActivity() {
 
     private fun setMemoView() {
         binding.also { b ->
+            if (!isUpdate&&isMemo) binding.frame.addView(layoutInflater.inflate(R.layout.memo_text, null).findViewById(R.id.memoText))
+            if (!isUpdate&&!isMemo) binding.frame.addView( LayoutInflater.from(baseContext).inflate(R.layout.memo_check_list, null, false) as CheckItemCustomView)
+
             val list = memo.contents?.let { Contents.stringToObject(it) }
             val color = if (memo.isPin) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
             color?.also { b.pinButton.backgroundTintList = color }
@@ -144,7 +149,7 @@ class CreateMemoActivity : AppCompatActivity() {
 
     fun saveMemo() {
         binding.also {
-            createMemoViewModel.onClickSaveButton(it.memoTitle.text.toString())
+            createMemoViewModel.onClickSaveButton(it.memoTitle.text.toString(), isMemo)
         }
     }
 

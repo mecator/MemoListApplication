@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">メモ</string>
+    <string name="check_ratio">チェック率%1$s％</string>
 </resources>

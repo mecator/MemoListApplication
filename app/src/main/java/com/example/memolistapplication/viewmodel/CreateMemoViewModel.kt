@@ -32,7 +32,7 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     private lateinit var onViewModelListener: CreateMemoActivity.OnViewModelListener
 
     internal var isUpdate: Boolean = false
-    internal var memo = Memo.defaultMemo()
+    internal lateinit var memo :Memo
     var firstMemo: Memo? = null
 
     init {
@@ -45,7 +45,7 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
 
     }
 
-    fun isNeedSaving(): Boolean = firstMemo?.description != getTitle() || firstMemo?.contents != getContents()
+    fun isNeedSaving(): Boolean = firstMemo?.description != getTitle() || firstMemo?.contents != getContents().first
 
 
     fun onClickPinButton() {
@@ -54,7 +54,7 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         onViewModelListener.onClickPinButton()
     }
 
-    fun onClickSaveButton(title: String) {
+    fun onClickSaveButton(title: String, isMemo: Boolean) {
         val contents = getContents()
         val zone = ZoneId.systemDefault()
         val date = LocalDateTime.now()
@@ -66,7 +66,9 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                     createDate = formatedDate
                     updateDate = formatedDate
                     description = title.let { if (it.isBlank()) "無題のメモ" else it }
-                    this.contents = contents
+                    this.contents = contents.first
+                    checkRatio = contents.second
+                    this.isMemo=isMemo
                 }
                 insert(memo)
             }
@@ -76,7 +78,9 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                     createDate = memo.createDate
                     updateDate = formatedDate
                     description = title.let { if (it.isBlank()) "無題のメモ" else it }
-                    this.contents = contents
+                    this.contents = contents.first
+                    checkRatio = contents.second
+                    this.isMemo=isMemo
                 }
                 if (firstMemo?.let { memo.isEqual(it) } == true) return
 
@@ -90,10 +94,6 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         onViewModelListener.onClickListButton()
     }
 
-    fun onClickTextButton() {
-        onViewModelListener.onClickTextButton()
-    }
-
     fun insert(memo: Memo?) = scope.launch(IO) {
         repository.insert(memo)
     }
@@ -102,16 +102,19 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
 
     fun getTitle(): String = onViewModelListener.getTitle()
 
-    fun getContents(): String {
+    fun getContents(): Pair<String, Double> {
+        var countIsCheck = 0
         val list = onViewModelListener.getFrameChildren().filter { view -> view is CheckItemCustomView || view is AppCompatEditText }.map {
             val memoContents = when (it) {
                 is CheckItemCustomView -> it.getCheckItem()
                 is AppCompatEditText -> it.text.toString().takeIf { it.isNotEmpty() }?.let { text -> Contents.MemoContent(Contents.MemoContent.ContentType.TEXT_MEMO, text, false) }
                 else -> null
             }
+            memoContents?.apply { if (this.isCheck) countIsCheck += 1 }
             memoContents
         }.toList().filterNotNull()
-        return Contents.objectToString(list)
+        val ratio=countIsCheck.toDouble().div(list.size.toDouble())
+        return Pair(Contents.objectToString(list),ratio )
     }
 
     override fun onCleared() {

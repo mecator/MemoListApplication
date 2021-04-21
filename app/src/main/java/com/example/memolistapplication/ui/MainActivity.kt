@@ -1,5 +1,7 @@
 package com.example.memolistapplication.ui
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityMainBinding
 import com.example.memolistapplication.room.Memo
+import com.example.memolistapplication.ui.CreateMemoActivity.Companion.IS_MEMO_KEY
 import com.example.memolistapplication.ui.CreateMemoActivity.Companion.IS_UPDATE_KEY
 import com.example.memolistapplication.ui.CreateMemoActivity.Companion.MEMO_KEY
 import com.example.memolistapplication.viewmodel.MemoListViewModel
@@ -45,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                 val list1 = memoList.toMutableList()
                 val list2 = arrayListOf<Memo>()
                 list1.filterIndexedTo(list2, { _, memo -> memo.isPin })
-               val l= memoList.filter { memo -> !memo.isPin }
-                val p=list2.plus(l)
+                val l = memoList.filter { memo -> !memo.isPin }
+                val p = list2.plus(l)
                 viewAdapter.setMemoList(p)
             }
         })
@@ -64,7 +67,12 @@ class MainActivity : AppCompatActivity() {
             it.floatButton.apply {
                 this.setOnClickListener {
                     if (isFabPlusIcon) {
-                        openCreateMemoActivity(null)
+                        val items = listOf("memo", "checklist").toTypedArray()
+                        AlertDialog.Builder(this@MainActivity)
+                            .setTitle("which is Type?")
+                            .setItems(items) { dialog, which ->
+                                openCreateMemoActivity(null, which == 0)
+                            }.show()
                     } else {
                         for (deleteMemo in mDeleteMemos) {
                             memoListViewModel.deleteMemo(deleteMemo)
@@ -81,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                 MemoListAdapter(this@MainActivity, memos, object : MemoClickListener {
                     override fun onItemClick(view: View, memo: Memo) {
                         if (!isDeleteMode) {
-                            openCreateMemoActivity(memo)
+                            openCreateMemoActivity(memo, memo.isMemo)
                         } else {
                             changeCarColor(view, memo)
                         }
@@ -100,15 +108,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun openCreateMemoActivity(memo: Memo?) {
+    fun openCreateMemoActivity(memo: Memo?, isMemo: Boolean) {
         val intent = Intent(applicationContext, CreateMemoActivity::class.java)
         intent.putExtra(MEMO_KEY, memo)
         intent.putExtra(IS_UPDATE_KEY, (memo != null))
+        intent.putExtra(IS_MEMO_KEY, isMemo)
         startActivity(intent)
         overridePendingTransition(
             android.R.anim.slide_in_left,
             android.R.anim.slide_out_right
         )
+
     }
 
     fun changeCarColor(card: View, memo: Memo) {
