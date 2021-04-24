@@ -1,12 +1,16 @@
 package com.example.memolistapplication.ui
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.view.animation.OvershootInterpolator
+import android.view.animation.RotateAnimation
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -24,6 +28,8 @@ import com.example.memolistapplication.viewmodel.MemoListViewModel
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.Collections.rotate
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -70,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                         val items = listOf("memo", "checklist").toTypedArray()
                         AlertDialog.Builder(this@MainActivity)
                             .setTitle("which is Type?")
-                            .setItems(items) { dialog, which ->
+                            .setItems(items) { _, which ->
                                 openCreateMemoActivity(null, which == 0)
                             }.show()
                     } else {
@@ -175,25 +181,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun rotateFAB() {
-        if (!isDeleteMode) {
-            ViewCompat.animate(float_button).rotation(360f).withLayer().setDuration(300L)
-                .setInterpolator(
-                    OvershootInterpolator()
-                )
-        }
-        if (isFabPlusIcon) {
-            float_button.setImageDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.ic_delete_24dp
-                )
-            )
-            isFabPlusIcon = false
-        } else {
-            float_button.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add))
-            isFabPlusIcon = true
-        }
-
+            binding.floatButton.animate()
+                .rotationBy(180F)        // rest 180 covered by "shrink" animation
+                .setDuration(100)
+                .scaleX(1.1f)           //Scaling to 110%
+                .scaleY(1.1f)
+                .withEndAction {
+                    if (isFabPlusIcon) {
+                        float_button.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this,
+                                R.drawable.ic_delete_24dp
+                            )
+                        )
+                        isFabPlusIcon = false
+                    } else {
+                        binding.floatButton.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_add))
+                        isFabPlusIcon = true
+                    }
+                    binding.floatButton.animate()
+                        .rotationBy(-180F)        // rest 180 covered by "shrink" animation
+                        .setDuration(100)
+                        .scaleX(1f)           //Scaling to 110%
+                        .scaleY(1f)
+                }
+                .start()
     }
 
     interface MemoClickListener {

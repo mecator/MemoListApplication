@@ -66,9 +66,10 @@
                 android:layout_marginBottom="4dp"
                 android:visibility="@{memo.memo? View.GONE:View.VISIBLE}"
                 android:text="@{@string/check_ratio(memo.getRatioPercent)}"
-                android:textColor="@color/second_text"
+                android:textColor="@{memo.is100percent()? @color/colorAccent:@color/second_text}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
+                tools:textColor="@color/second_text"
                 tools:text="チェック率30%" />
 
             <ImageView

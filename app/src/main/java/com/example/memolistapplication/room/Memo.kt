@@ -40,6 +40,8 @@ data class Memo(
         return (id == memo.id && createDate == memo.createDate && updateDate == memo.updateDate && description == memo.description && contents == memo.contents && isPin == memo.isPin && checkRatio == memo.checkRatio && isMemo == memo.isMemo)
     }
 
-    fun getRatioPercent(): String = (BigDecimal(checkRatio).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()*100).toString()
+    fun getRatioPercent(): String = (BigDecimal(checkRatio).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble() * 100).toString()
+
+    fun is100percent(): Boolean = (checkRatio.toFloat() == 1f)
 
 }
