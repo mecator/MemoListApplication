@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="android.view.View" />
         <variable
             name="viewModel"
@@ -14,13 +16,12 @@
 
     </data>
 
-    <androidx.constraintlayout.motion.widget.MotionLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:theme="@style/Theme.MaterialComponents"
-        app:layoutDescription="@xml/activity_create_memo_scene">
+        android:theme="@style/Theme.MaterialComponents">
 
         <ImageView
             android:id="@+id/save_button"
@@ -28,25 +29,39 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
+            android:background="@drawable/ic_check_black_24dp"
+            android:backgroundTint="@color/colorAccent"
             android:onClick="@{(v)->viewModel.onClickSaveButton(memoTitle.getText().toString(),memo.memo)}"
             android:textColor="@color/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/ic_check_black_24dp"
-            android:backgroundTint="@color/colorAccent" />
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageView
             android:id="@+id/pin_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
+            android:background="@drawable/ic_pin"
+            android:backgroundTint="@color/icon_black"
+            android:hapticFeedback="@{true}"
             android:onClick="@{()->viewModel.onClickPinButton()}"
             android:textColor="@color/colorPrimary"
             app:layout_constraintStart_toEndOf="@id/save_button"
-            app:layout_constraintTop_toTopOf="parent"
-            android:hapticFeedback="@{true}"
-            android:background="@drawable/ic_pin"
-            android:backgroundTint="@color/icon_black" />
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/notification_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:layout_marginTop="17dp"
+            android:layout_marginHorizontal="4dp"
+            android:visibility="@{viewModel.notificationVisibility?View.VISIBLE:View.GONE}"
+            android:text="@{viewModel.notificationInfo}"
+            tools:text="2017/05/22 12:30に通知予定"
+            app:layout_constraintStart_toEndOf="@id/notification_button"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ImageView
             android:id="@+id/list_button"
@@ -57,58 +72,67 @@
             android:background="@drawable/ic_add_check"
             android:backgroundTint="@color/icon_black"
             android:onClick="@{(v)->viewModel.onClickListButton()}"
+            android:text="リスト"
+            android:textColor="@color/colorPrimary"
             android:visibility="@{memo.memo? View.GONE:View.VISIBLE}"
-            android:text="リスト"
-            android:textColor="@color/colorPrimary"
-            app:layout_constraintEnd_toStartOf="@id/option_button"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/option_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_menu"
-            android:backgroundTint="@color/icon_black"
-            android:text="リスト"
-            android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/titleInputLayout"
-            style="@style/titleStyle"
+        <ImageView
+            android:id="@+id/notification_button"
+            android:layout_height="24dp"
+            android:layout_width="24dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/ic_notification"
+            android:backgroundTint="@color/icon_black"
+            android:onClick="@{(v)->viewModel.onClickNotificationButton()}"
+            app:layout_constraintStart_toEndOf="@id/pin_button"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+<!--        <ImageView-->
+<!--            android:id="@+id/option_button"-->
+<!--            android:layout_width="24dp"-->
+<!--            android:layout_height="24dp"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_marginEnd="16dp"-->
+<!--            android:background="@drawable/ic_menu"-->
+<!--            android:backgroundTint="@color/icon_black"-->
+<!--            android:text="リスト"-->
+<!--            android:textColor="@color/colorPrimary"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <EditText
+            android:id="@+id/memoTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            app:hintAnimationEnabled="true"
-            app:hintEnabled="true"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp"
+            android:background="@null"
+            android:hint="タイトル"
+            android:imeOptions="actionDone"
+            android:inputType="textMultiLine"
+            android:text="@{memo.description}"
+            android:textColor="@color/black"
+            android:textColorHint="@color/hint"
+            android:textSize="23sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/save_button">
+            app:layout_constraintTop_toBottomOf="@id/save_button" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/memoTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="タイトル"
-                android:imeOptions="actionDone"
-                android:inputType="textMultiLine"
-                android:text="@{memo.description}"
-                android:textColor="@color/black"
-                android:textColorHint="@color/second_text" />
-        </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scroll"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:fadingEdge="none"
-            android:layout_marginTop="4dp"
             android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="8dp"
+            android:fadingEdge="none"
             android:paddingBottom="130dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/titleInputLayout">
+            app:layout_constraintTop_toBottomOf="@id/memoTitle">
 
             <LinearLayout
                 android:id="@+id/frame"
@@ -116,12 +140,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" />
         </androidx.core.widget.NestedScrollView>
-
-        <include
-            layout="@layout/menu_layout"
-            android:id="@+id/menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/black"/>
-    </androidx.constraintlayout.motion.widget.MotionLayout>
+<!--        <include-->
+<!--            android:id="@+id/menu"-->
+<!--            layout="@layout/menu_layout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:textColor="@color/black" />-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

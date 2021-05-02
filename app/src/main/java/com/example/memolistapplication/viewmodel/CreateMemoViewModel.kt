@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -32,8 +33,9 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     private lateinit var onViewModelListener: CreateMemoActivity.OnViewModelListener
 
     internal var isUpdate: Boolean = false
-    internal lateinit var memo :Memo
+    internal lateinit var memo: Memo
     var firstMemo: Memo? = null
+    private var calendar: Calendar? = null
 
     init {
         val memoDao = MemoApplication.database.memoDao()
@@ -54,6 +56,18 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         onViewModelListener.onClickPinButton()
     }
 
+    interface NotificationListener {
+        fun onClick(calendar: Calendar)
+    }
+
+    fun onClickNotificationButton() {
+        onViewModelListener.onClickNotificationButton(object : NotificationListener {
+            override fun onClick(_calendar: Calendar) {
+                calendar = _calendar
+            }
+        })
+    }
+
     fun onClickSaveButton(title: String, isMemo: Boolean) {
         val contents = getContents()
         val zone = ZoneId.systemDefault()
@@ -68,7 +82,8 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                     description = title.let { if (it.isBlank()) "無題のメモ" else it }
                     this.contents = contents.first
                     checkRatio = contents.second
-                    this.isMemo=isMemo
+                    this.isMemo = isMemo
+                    this@CreateMemoViewModel.calendar?.also { this.calendar = it }
                 }
                 insert(memo)
             }
@@ -80,7 +95,8 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                     description = title.let { if (it.isBlank()) "無題のメモ" else it }
                     this.contents = contents.first
                     checkRatio = contents.second
-                    this.isMemo=isMemo
+                    this.isMemo = isMemo
+                    this@CreateMemoViewModel.calendar?.also { this.calendar = it }
                 }
                 if (firstMemo?.let { memo.isEqual(it) } == true) return
 
@@ -113,12 +129,20 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
             memoContents?.apply { if (this.isCheck) countIsCheck += 1 }
             memoContents
         }.toList().filterNotNull()
-        val ratio=countIsCheck.toDouble().div(list.size.toDouble())
-        return Pair(Contents.objectToString(list),ratio )
+        val ratio = countIsCheck.toDouble().div(list.size.toDouble())
+        return Pair(Contents.objectToString(list), ratio)
     }
 
     override fun onCleared() {
         super.onCleared()
         parentJob.cancel()
     }
+
+    fun getNotificationInfo():String?{
+        return memo.calendar?.run {
+            val simpleDateFormat=SimpleDateFormat("yyyy/MM/dd HH:mm")
+            simpleDateFormat.format(time)+" に通知予定"
+        }
+    }
+    fun isNotificationVisibility():Boolean=getNotificationInfo()?.isNotBlank()?:false
 }

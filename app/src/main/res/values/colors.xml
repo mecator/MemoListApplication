@@ -4,7 +4,9 @@
     <color name="colorPrimaryLight">#b6d5e1</color>
     <color name="colorPrimaryDark">#555273</color>
     <color name="colorAccent">#ff7e67</color>
+    <color name="colorAccentSub">#FDA595</color>
     <color name="black">#333</color>
+    <color name="light_black">#474747</color>
     <color name="white">#fff</color>
     <color name="second_text">#757575</color>
     <color name="hint">#ACACAC</color>

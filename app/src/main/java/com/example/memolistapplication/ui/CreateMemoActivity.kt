@@ -1,6 +1,8 @@
 package com.example.memolistapplication.ui
 
-import android.content.res.Resources
+import android.app.*
+import android.app.NotificationManager.IMPORTANCE_DEFAULT
+import android.content.Intent
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -9,18 +11,20 @@ import android.view.View
 import android.view.View.GONE
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
+import com.example.memolistapplication.AlarmBroadcastReceiver
 import com.example.memolistapplication.R
 import com.example.memolistapplication.databinding.ActivityCreateMemoBinding
 import com.example.memolistapplication.model.memo.Contents
 import com.example.memolistapplication.room.Memo
 import com.example.memolistapplication.viewmodel.CreateMemoViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import java.util.*
 
 class CreateMemoActivity : AppCompatActivity() {
 
@@ -33,8 +37,17 @@ class CreateMemoActivity : AppCompatActivity() {
     private lateinit var memo: Memo
     private var isUpdate: Boolean = false
     private var isMemo: Boolean = true
+    private var calendar: Calendar? = null
     private lateinit var createMemoViewModel: CreateMemoViewModel
     private lateinit var binding: ActivityCreateMemoBinding
+    fun setAlarm(calendar: Calendar?) {
+        calendar ?: return
+        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+        val pending = PendingIntent.getBroadcast(applicationContext, 0, intent, 0)
+        val am = applicationContext.getSystemService(AlarmManager::class.java)
+        am.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pending)
+        Toast.makeText(applicationContext, "set alarm", Toast.LENGTH_SHORT).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +68,7 @@ class CreateMemoActivity : AppCompatActivity() {
 
                     override fun onClickSaveButton() {
                         finish()
+                        setAlarm(calendar)
                     }
 
                     override fun onClickListButton() {
@@ -66,11 +80,22 @@ class CreateMemoActivity : AppCompatActivity() {
                         color?.also { binding.pinButton.backgroundTintList = color }
                     }
 
+                    override fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener) {
+                        DatePickFragment { _, year, month, dayOfMonth ->
+                            TimePickFragment { _, hour, minute ->
+                                val _calendar = Calendar.getInstance()
+                                _calendar.set(year, month, dayOfMonth, hour, minute)
+                                calendar = _calendar
+                                listener.onClick(_calendar)
+                            }.show(supportFragmentManager, "timePicker")
+
+                        }.show(supportFragmentManager, "datePicker")
+                    }
+
                     override fun getTitle(): String = binding.memoTitle.text.toString()
 
                 })
             }
-
 
         createMemoViewModel.also { model ->
             model.isUpdate = isUpdate
@@ -97,6 +122,7 @@ class CreateMemoActivity : AppCompatActivity() {
         fun onClickSaveButton()
         fun onClickListButton()
         fun onClickPinButton()
+        fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener)
         fun getTitle(): String
     }
 
@@ -124,12 +150,15 @@ class CreateMemoActivity : AppCompatActivity() {
 
     private fun setMemoView() {
         binding.also { b ->
-            if (!isUpdate&&isMemo) binding.frame.addView(layoutInflater.inflate(R.layout.memo_text, null).findViewById(R.id.memoText))
-            if (!isUpdate&&!isMemo) binding.frame.addView( LayoutInflater.from(baseContext).inflate(R.layout.memo_check_list, null, false) as CheckItemCustomView)
+            if (!isUpdate && isMemo) binding.frame.addView(layoutInflater.inflate(R.layout.memo_text, null).findViewById(R.id.memoText))
+            if (!isUpdate && !isMemo) binding.frame.addView(LayoutInflater.from(baseContext).inflate(R.layout.memo_check_list, null, false) as CheckItemCustomView)
 
+            if (!isUpdate) b.memoTitle.requestFocus()
             val list = memo.contents?.let { Contents.stringToObject(it) }
-            val color = if (memo.isPin) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
-            color?.also { b.pinButton.backgroundTintList = color }
+            val pinColor = if (memo.isPin) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
+            pinColor?.also { b.pinButton.backgroundTintList = it }
+            val notifyColor = if (memo.calendar != null) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
+            notifyColor?.also { b.notificationButton.backgroundTintList = notifyColor }
             list?.forEach {
                 when (it.type) {
                     Contents.MemoContent.ContentType.TEXT_MEMO -> {

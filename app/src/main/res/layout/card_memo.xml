@@ -29,7 +29,6 @@
         android:theme="@style/Theme.MaterialComponents"
         app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="5dp"
-        app:cardElevation="3dp"
         app:contentPadding="4dp"
         app:rippleColor="@color/colorAccent"
         app:strokeColor="@color/colorPrimary"

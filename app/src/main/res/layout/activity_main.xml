@@ -45,6 +45,42 @@
                 android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/check_float_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="155dp"
+                android:overScrollMode="ifContentScrolls"
+                android:scaleType="center"
+                android:padding="5dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_add_check"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:backgroundTint="@color/colorAccentSub"
+                app:elevation="5dp"
+                app:tint="@color/icon_black"
+                app:fabCustomSize="40dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/memo_float_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="100dp"
+                android:overScrollMode="ifContentScrolls"
+                android:scaleType="center"
+                android:padding="5dp"
+                android:layout_gravity="bottom|end"
+                android:src="@drawable/ic_text"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:backgroundTint="@color/colorAccentSub"
+                app:elevation="5dp"
+                app:tint="@color/icon_black"
+                app:fabCustomSize="40dp" />
+
             <com.google.android.material.bottomappbar.BottomAppBar
                 android:id="@+id/app_bar"
                 android:layout_width="match_parent"
