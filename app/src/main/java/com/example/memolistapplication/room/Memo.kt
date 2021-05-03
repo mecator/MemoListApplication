@@ -51,5 +51,11 @@ data class Memo(
     fun getRatioPercent(): String = (BigDecimal(checkRatio).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble() * 100).toString()
 
     fun is100percent(): Boolean = (checkRatio.toFloat() == 1f)
+    fun isPastCalendar():Boolean{
+        val _calendar=calendar
+        _calendar?:return true
+        val today=Calendar.getInstance()
+        return today > _calendar
+    }
 
 }

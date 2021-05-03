@@ -43,10 +43,20 @@ class CreateMemoActivity : AppCompatActivity() {
     fun setAlarm(calendar: Calendar?) {
         calendar ?: return
         val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-        val pending = PendingIntent.getBroadcast(applicationContext, 0, intent, 0)
+       intent.putExtra(AlarmBroadcastReceiver.KEY_DESCRIPTION,memo.description)
+        val pending = PendingIntent.getBroadcast(applicationContext, memo.id.toInt(), intent, 0)
         val am = applicationContext.getSystemService(AlarmManager::class.java)
         am.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pending)
         Toast.makeText(applicationContext, "set alarm", Toast.LENGTH_SHORT).show()
+    }
+
+    fun cancelAlarm() {
+        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+        val pending = PendingIntent.getBroadcast(applicationContext, memo.id.toInt(), intent, 0)
+        val am = applicationContext.getSystemService(AlarmManager::class.java)
+        pending.cancel()
+        am.cancel(pending)
+        Toast.makeText(applicationContext, "cancel alarm", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +78,8 @@ class CreateMemoActivity : AppCompatActivity() {
 
                     override fun onClickSaveButton() {
                         finish()
-                        setAlarm(calendar)
+                            setAlarm(calendar)
+
                     }
 
                     override fun onClickListButton() {
@@ -80,16 +91,21 @@ class CreateMemoActivity : AppCompatActivity() {
                         color?.also { binding.pinButton.backgroundTintList = color }
                     }
 
-                    override fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener) {
-                        DatePickFragment { _, year, month, dayOfMonth ->
-                            TimePickFragment { _, hour, minute ->
-                                val _calendar = Calendar.getInstance()
-                                _calendar.set(year, month, dayOfMonth, hour, minute)
-                                calendar = _calendar
-                                listener.onClick(_calendar)
-                            }.show(supportFragmentManager, "timePicker")
+                    override fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener, memo: Memo) {
+                        if (memo.calendar != null) {
+                            cancelAlarm()
+                            listener.onClick(null)
+                        } else {
+                            DatePickFragment { _, year, month, dayOfMonth ->
+                                TimePickFragment { _, hour, minute ->
+                                    val _calendar = Calendar.getInstance()
+                                    _calendar.set(year, month, dayOfMonth, hour, minute)
+                                    calendar = _calendar
+                                    listener.onClick(_calendar)
+                                }.show(supportFragmentManager, "timePicker")
 
-                        }.show(supportFragmentManager, "datePicker")
+                            }.show(supportFragmentManager, "datePicker")
+                        }
                     }
 
                     override fun getTitle(): String = binding.memoTitle.text.toString()
@@ -122,7 +138,7 @@ class CreateMemoActivity : AppCompatActivity() {
         fun onClickSaveButton()
         fun onClickListButton()
         fun onClickPinButton()
-        fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener)
+        fun onClickNotificationButton(listener: CreateMemoViewModel.NotificationListener, memo: Memo)
         fun getTitle(): String
     }
 
@@ -157,7 +173,7 @@ class CreateMemoActivity : AppCompatActivity() {
             val list = memo.contents?.let { Contents.stringToObject(it) }
             val pinColor = if (memo.isPin) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
             pinColor?.also { b.pinButton.backgroundTintList = it }
-            val notifyColor = if (memo.calendar != null) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
+            val notifyColor = if (memo.calendar != null&&!memo.isPastCalendar()) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
             notifyColor?.also { b.notificationButton.backgroundTintList = notifyColor }
             list?.forEach {
                 when (it.type) {

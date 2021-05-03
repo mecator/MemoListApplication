@@ -44,11 +44,9 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
 
     fun initialize(listener: CreateMemoActivity.OnViewModelListener) {
         onViewModelListener = listener
-
     }
 
     fun isNeedSaving(): Boolean = firstMemo?.description != getTitle() || firstMemo?.contents != getContents().first
-
 
     fun onClickPinButton() {
         memo.apply { isPin = !isPin }
@@ -57,15 +55,18 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     interface NotificationListener {
-        fun onClick(calendar: Calendar)
+        fun onClick(calendar: Calendar?)
     }
 
     fun onClickNotificationButton() {
-        onViewModelListener.onClickNotificationButton(object : NotificationListener {
-            override fun onClick(_calendar: Calendar) {
-                calendar = _calendar
-            }
-        })
+        onViewModelListener.onClickNotificationButton(
+            object : NotificationListener {
+                override fun onClick(_calendar: Calendar?) {
+                    calendar = _calendar
+                }
+            },
+            memo
+        )
     }
 
     fun onClickSaveButton(title: String, isMemo: Boolean) {
@@ -96,7 +97,11 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
                     this.contents = contents.first
                     checkRatio = contents.second
                     this.isMemo = isMemo
-                    this@CreateMemoViewModel.calendar?.also { this.calendar = it }
+                    if (this@CreateMemoViewModel.calendar != null) {
+                        this.calendar = this@CreateMemoViewModel.calendar
+                    } else if (this.calendar != null && this@CreateMemoViewModel.calendar == null) {
+                        this.calendar = null
+                    }
                 }
                 if (firstMemo?.let { memo.isEqual(it) } == true) return
 
@@ -138,11 +143,12 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
         parentJob.cancel()
     }
 
-    fun getNotificationInfo():String?{
+    fun getNotificationInfo(): String? {
         return memo.calendar?.run {
-            val simpleDateFormat=SimpleDateFormat("yyyy/MM/dd HH:mm")
-            simpleDateFormat.format(time)+" に通知予定"
+            val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm")
+            simpleDateFormat.format(time) + " に通知予定"
         }
     }
-    fun isNotificationVisibility():Boolean=getNotificationInfo()?.isNotBlank()?:false
+
+    fun isNotificationVisibility(): Boolean = getNotificationInfo()?.isNotBlank() == true && !memo.isPastCalendar()
 }
