@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
+import com.example.memolistapplication.model.memo.Contents
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
@@ -29,6 +30,10 @@ data class Memo(
         fun defaultMemo(isMemo: Boolean): Memo {
             return Memo(0, Date(), Date(), "", "", false, 0.0, isMemo, null)
         }
+    }
+
+    fun firstContent():String{
+        return Contents.stringToObject(contents?:"").getOrNull(0)?.text?:""
     }
 
     fun alterMemo(): Memo {
