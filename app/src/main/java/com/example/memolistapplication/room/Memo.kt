@@ -7,6 +7,7 @@ import androidx.room.TypeConverters
 import com.example.memolistapplication.model.memo.Contents
 import java.io.Serializable
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
@@ -31,6 +32,11 @@ data class Memo(
         fun defaultMemo(isMemo: Boolean): Memo {
             return Memo(0, Date(), Date(), "", "", false, 0.0, isMemo, null)
         }
+    }
+
+    fun japanDate(): String {
+        val df = SimpleDateFormat("yyyy年MM月dd日 HH:mm")
+        return df.format(updateDate)
     }
 
     fun firstContent(): String {

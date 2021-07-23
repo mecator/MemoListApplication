@@ -103,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="5dp"
-                android:text="@{memo.updateDate.toLocaleString()}"
+                android:text="@{memo.japanDate()}"
                 android:textColor="@color/second_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

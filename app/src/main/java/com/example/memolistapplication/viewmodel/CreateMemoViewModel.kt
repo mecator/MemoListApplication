@@ -134,7 +134,12 @@ class CreateMemoViewModel(app: Application) : AndroidViewModel(app) {
             memoContents?.apply { if (this.isCheck) countIsCheck += 1 }
             memoContents
         }.toList().filterNotNull()
-        val ratio = countIsCheck.toDouble().div(list.size.toDouble())
+        val ratio = list
+            .takeIf { it.isNotEmpty() }
+            ?.size
+            ?.toDouble()
+            ?.let { countIsCheck.toDouble().div(list.size.toDouble()) }
+            ?: run { 0.0 }
         return Pair(Contents.objectToString(list), ratio)
     }
 
