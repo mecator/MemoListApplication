@@ -84,6 +84,8 @@ class MainActivity : AppCompatActivity() {
                         if (!isPushedFAB) {
                             binding.memoFloatButton.visibility = VISIBLE
                             binding.checkFloatButton.visibility = VISIBLE
+                            binding.titleCheck.visibility = VISIBLE
+                            binding.titleMemo.visibility = VISIBLE
                             isPushedFAB = true
                         } else {
                             returnFab()
@@ -132,6 +134,8 @@ class MainActivity : AppCompatActivity() {
             .scaleY(1f).start()
         binding.memoFloatButton.visibility = GONE
         binding.checkFloatButton.visibility = GONE
+        binding.titleCheck.visibility = GONE
+        binding.titleMemo.visibility = GONE
         binding.memoList.isEnabled = true
         isPushedFAB = false
     }

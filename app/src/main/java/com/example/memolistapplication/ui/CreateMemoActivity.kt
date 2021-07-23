@@ -1,7 +1,6 @@
 package com.example.memolistapplication.ui
 
 import android.app.*
-import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.content.Intent
 import android.os.Bundle
 import android.view.HapticFeedbackConstants
@@ -9,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -43,7 +43,7 @@ class CreateMemoActivity : AppCompatActivity() {
     fun setAlarm(calendar: Calendar?) {
         calendar ?: return
         val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-       intent.putExtra(AlarmBroadcastReceiver.KEY_DESCRIPTION,memo.description)
+        intent.putExtra(AlarmBroadcastReceiver.KEY_DESCRIPTION, memo.description)
         val pending = PendingIntent.getBroadcast(applicationContext, memo.id.toInt(), intent, 0)
         val am = applicationContext.getSystemService(AlarmManager::class.java)
         am.setExact(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pending)
@@ -78,8 +78,8 @@ class CreateMemoActivity : AppCompatActivity() {
 
                     override fun onClickSaveButton() {
                         finish()
-                            setAlarm(calendar)
-
+                        setAlarm(calendar)
+                        hideKeyboard()
                     }
 
                     override fun onClickListButton() {
@@ -142,6 +142,11 @@ class CreateMemoActivity : AppCompatActivity() {
         fun getTitle(): String
     }
 
+    fun hideKeyboard() {
+        val imm: InputMethodManager = applicationContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+    }
+
     override fun onBackPressed() {
         if (!createMemoViewModel.isNeedSaving()) finish() else {
             MaterialAlertDialogBuilder(this).apply {
@@ -173,7 +178,8 @@ class CreateMemoActivity : AppCompatActivity() {
             val list = memo.contents?.let { Contents.stringToObject(it) }
             val pinColor = if (memo.isPin) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
             pinColor?.also { b.pinButton.backgroundTintList = it }
-            val notifyColor = if (memo.calendar != null&&!memo.isPastCalendar()) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
+            val notifyColor =
+                if (memo.calendar != null && !memo.isPastCalendar()) ContextCompat.getColorStateList(this, R.color.colorAccent) else ContextCompat.getColorStateList(this, R.color.icon_black)
             notifyColor?.also { b.notificationButton.backgroundTintList = notifyColor }
             list?.forEach {
                 when (it.type) {

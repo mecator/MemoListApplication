@@ -8,8 +8,9 @@ import com.example.memolistapplication.model.memo.Contents
 import java.io.Serializable
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.roundToInt
 
-@TypeConverters(DateConverter::class,CalendarConverter::class)
+@TypeConverters(DateConverter::class, CalendarConverter::class)
 @Entity
 data class Memo(
     @PrimaryKey(autoGenerate = true)
@@ -32,8 +33,8 @@ data class Memo(
         }
     }
 
-    fun firstContent():String{
-        return Contents.stringToObject(contents?:"").getOrNull(0)?.text?:""
+    fun firstContent(): String {
+        return Contents.stringToObject(contents ?: "").getOrNull(0)?.text ?: ""
     }
 
     fun alterMemo(): Memo {
@@ -49,17 +50,17 @@ data class Memo(
                 isPin == memo.isPin &&
                 checkRatio == memo.checkRatio &&
                 isMemo == memo.isMemo &&
-                calendar==memo.calendar
+                calendar == memo.calendar
                 )
     }
 
-    fun getRatioPercent(): String = (BigDecimal(checkRatio).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble() * 100).toString()
+    fun getRatioPercent(): String = ((checkRatio * 1000.0).roundToInt() / 10.0).toString()
 
     fun is100percent(): Boolean = (checkRatio.toFloat() == 1f)
-    fun isPastCalendar():Boolean{
-        val _calendar=calendar
-        _calendar?:return true
-        val today=Calendar.getInstance()
+    fun isPastCalendar(): Boolean {
+        val _calendar = calendar
+        _calendar ?: return true
+        val today = Calendar.getInstance()
         return today > _calendar
     }
 
