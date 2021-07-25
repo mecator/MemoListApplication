@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.memolistapplication">
+    package="jp.mercator.memolistapplication">
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <application
         android:name=".MemoApplication"
@@ -24,7 +24,7 @@
             android:theme="@style/AppTheme">
 
         </activity>
-        <receiver android:name=".AlarmBroadcastReceiver"
+        <receiver android:name="jp.mercator.memolistapplication.AlarmBroadcastReceiver"
             android:process=":remote"
             tools:ignore="Instantiatable" />
     </application>

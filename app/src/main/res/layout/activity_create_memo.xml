@@ -8,11 +8,11 @@
         <import type="android.view.View" />
         <variable
             name="viewModel"
-            type="com.example.memolistapplication.viewmodel.CreateMemoViewModel" />
+            type="jp.mercator.memolistapplication.viewmodel.CreateMemoViewModel" />
 
         <variable
             name="memo"
-            type="com.example.memolistapplication.room.Memo" />
+            type="jp.mercator.memolistapplication.room.Memo" />
 
     </data>
 

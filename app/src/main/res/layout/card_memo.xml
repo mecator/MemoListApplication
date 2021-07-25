@@ -10,11 +10,11 @@
         <import type="double"/>
         <variable
             name="memo"
-            type="com.example.memolistapplication.room.Memo" />
+            type="jp.mercator.memolistapplication.room.Memo" />
 
         <variable
             name="clickListener"
-            type="com.example.memolistapplication.ui.MainActivity.MemoClickListener" />
+            type="jp.mercator.memolistapplication.ui.MainActivity.MemoClickListener" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
